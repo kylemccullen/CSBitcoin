@@ -2,10 +2,10 @@ namespace Lib;
 
 public class FieldElement
 {
-    public int Num { get; set; }
+    public int? Num { get; set; }
     public int Prime { get; set; }
 
-    public FieldElement(int num, int prime)
+    public FieldElement(int? num, int prime)
     {
         if (num < 0 || num > prime)
         {
@@ -18,7 +18,8 @@ public class FieldElement
 
     public override string ToString()
     {
-        return $"FieldElement_{Prime}({Num})";
+        var num = Num.HasValue ? Num.ToString() : "inf";
+        return $"FieldElement_{Prime}({num})";
     }
 
     public override bool Equals(object? obj) => this.Equals(obj as FieldElement);
@@ -52,7 +53,7 @@ public class FieldElement
         if (a.Prime != b.Prime)
             throw new Exception("Cannot add numbers of different Fields!");
 
-        var num = MathHelper.Mod(a.Num + b.Num, a.Prime);
+        var num = MathHelper.Mod(a.Num!.Value + b.Num!.Value, a.Prime);
         return new FieldElement(num, a.Prime);
     }
 
@@ -61,7 +62,7 @@ public class FieldElement
         if (a.Prime != b.Prime)
             throw new Exception("Cannot subtract numbers of different Fields!");
 
-        var num = MathHelper.Mod(a.Num - b.Num, a.Prime);
+        var num = MathHelper.Mod(a.Num!.Value - b.Num!.Value, a.Prime);
         return new FieldElement(num, a.Prime);
     }
 
@@ -69,13 +70,14 @@ public class FieldElement
     {
         if (a.Prime != b.Prime)
             throw new Exception("Cannot multiply numbers of different Fields!");
-        var num = MathHelper.Mod(a.Num * b.Num, a.Prime);
+
+        var num = MathHelper.Mod(a.Num!.Value * b.Num!.Value, a.Prime);
         return new FieldElement(num, a.Prime);
     }
 
     public static FieldElement operator *(FieldElement a, int b)
     {
-        var num = MathHelper.Mod(a.Num * b, a.Prime);
+        var num = MathHelper.Mod(a.Num!.Value * b, a.Prime);
         return new FieldElement(num, a.Prime);
     }
 
@@ -83,7 +85,8 @@ public class FieldElement
     {
         if (a.Prime != b.Prime)
             throw new Exception("Cannot divide numbers of different Fields!");
-        var num = MathHelper.Mod(a.Num * MathHelper.Pow(b.Num, a.Prime - 2, a.Prime), a.Prime);
+
+        var num = MathHelper.Mod(a.Num!.Value * MathHelper.Pow(b.Num!.Value, a.Prime - 2, a.Prime), a.Prime);
         return new FieldElement(num, a.Prime);
     }
 
@@ -92,7 +95,7 @@ public class FieldElement
         var n = element;
         while (n < 0)
             n += a.Prime - 1;
-        var num = MathHelper.Pow(a.Num, n, a.Prime);
+        var num = MathHelper.Pow(a.Num!.Value, n, a.Prime);
         return new FieldElement(num, a.Prime);
     }
 
