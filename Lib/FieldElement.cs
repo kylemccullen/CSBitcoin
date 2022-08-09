@@ -1,11 +1,13 @@
+using System.Numerics;
+
 namespace Lib;
 
 public class FieldElement
 {
-    public int? Num { get; set; }
-    public int Prime { get; set; }
+    public BigInteger? Num { get; set; }
+    public BigInteger Prime { get; set; }
 
-    public FieldElement(int? num, int prime)
+    public FieldElement(BigInteger? num, BigInteger prime)
     {
         if (num < 0 || num > prime)
         {
@@ -90,7 +92,7 @@ public class FieldElement
         return new FieldElement(num, a.Prime);
     }
 
-    public static FieldElement Pow(FieldElement a, int element)
+    public static FieldElement Pow(FieldElement a, BigInteger element)
     {
         var n = element;
         while (n < 0)

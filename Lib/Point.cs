@@ -1,3 +1,5 @@
+using System.Numerics;
+
 namespace Lib;
 
 public class Point
@@ -88,7 +90,12 @@ public class Point
         throw new Exception("Error");
     }
 
-    public static Point operator *(Point p, int coefficient)
+    public static Point operator *(Point p, BigInteger coefficient)
+    {
+        return Multiply(p, coefficient);
+    }
+
+    public static Point Multiply(Point p, BigInteger coefficient)
     {
         var current = p;
         var result = NewNullPoint(p);

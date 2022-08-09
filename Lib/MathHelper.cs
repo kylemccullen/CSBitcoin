@@ -1,26 +1,27 @@
+using System.Globalization;
+using System.Numerics;
+
 namespace Lib;
 
 public static class MathHelper
 {
-    public static int Mod(int x, int y)
+    public static BigInteger Mod(BigInteger x, BigInteger y)
     {
         return (x % y + y) % y;
     }
 
-    public static int Pow(int x, int y, int? modulus = null)
+    public static BigInteger Pow(BigInteger x, BigInteger y, BigInteger? modulus = null)
     {
-        if (modulus is null)
+        if (modulus == null)
         {
-            return (int) Math.Pow(x, y);
+            return BigInteger.Pow(x, (int)y);
         }
 
-        var ans = x;
-        for (var i = 0; i < y - 1; i++)
-        {
-            ans *= x;
-            ans = Mod(ans, modulus.Value);
-        }
+        return BigInteger.ModPow(x, y, modulus.Value);
+    }
 
-        return ans;
+    public static BigInteger Parse(string hex)
+    {
+        return BigInteger.Parse(hex.Replace("x", ""), NumberStyles.HexNumber);
     }
 }
