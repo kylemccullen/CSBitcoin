@@ -24,7 +24,25 @@ public class S256PointTest
             "0x68342ceff8935ededd102dd876ffd6ba72d6a427a3edb13d26eb0781cb423c4")]
     public void Verify(string x, string y, string z, string r, string s)
     {
-        var point = new S256Point(x, y);
-        Assert.True(point.Verify(MathHelper.Parse(z), new Signature(r, s)));
+        var p = new S256Point(x, y);
+        Assert.True(p.Verify(MathHelper.Parse(z), new Signature(r, s)));
+    }
+
+    [Theory]
+    [InlineData(
+            "997002999",
+            "049d5ca49670cbe4c3bfa84c96a8c87df086c6ea6a24ba6b809c9de234496808d56fa15cc7f3d38cda98dee2419f415b7513dde1301f8643cd9245aea7f3f911f9",
+            "039d5ca49670cbe4c3bfa84c96a8c87df086c6ea6a24ba6b809c9de234496808d5")]
+    [InlineData(
+            "123",
+            "04a598a8030da6d86c6bc7f2f5144ea549d28211ea58faa70ebf4c1e665c1fe9b5204b5d6f84822c307e4b4a7140737aec23fc63b65b35f86a10026dbd2d864e6b",
+            "03a598a8030da6d86c6bc7f2f5144ea549d28211ea58faa70ebf4c1e665c1fe9b5"
+            )]
+    public void SECKey(string coefficient, string uncompressed, string compressed)
+    {
+        var p = Constants.G * BigInteger.Parse(coefficient);
+
+        Assert.Equal(uncompressed, ByteHelper.ToHexString(p.SECKey(false)));
+        Assert.Equal(compressed, ByteHelper.ToHexString(p.SECKey()));
     }
 }

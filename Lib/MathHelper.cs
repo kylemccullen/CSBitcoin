@@ -24,4 +24,15 @@ public static class MathHelper
     {
         return BigInteger.Parse(hex.Replace("x", ""), NumberStyles.HexNumber);
     }
+
+    public static byte[] ToByteArray(this BigInteger value, int size, bool isBigEndian = false)
+    {
+        var byteArray = value.ToByteArray().Take(size).ToArray();
+        if (isBigEndian)
+        {
+            Array.Reverse(byteArray, 0, byteArray.Length);
+        }
+
+        return byteArray;
+    }
 }

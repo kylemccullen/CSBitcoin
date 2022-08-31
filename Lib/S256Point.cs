@@ -42,4 +42,32 @@ public class S256Point : Point
         var total = Constants.G * u + this * v;
         return total.X.Num == signature.R;
     }
+
+    public byte[] SECKey(bool compressed = true)
+    {
+        if (compressed)
+        {
+            var prefixByte = (byte) ((Y.Num % 2 == 0) ? 0x02 : 0x03);
+            return AddBytePrefix(prefixByte, X.Num!.Value);
+        }
+        else
+        {
+            var prefixByte = (byte) 0x04;
+            return AddBytePrefix(prefixByte, X.Num!.Value, Y.Num!.Value);
+        }
+    }
+
+    private static byte[] AddBytePrefix(byte prefixByte, params BigInteger[] values)
+    {
+        var data = new List<byte>()
+        {
+            prefixByte
+        };
+        foreach (var value in values)
+        {
+            data.AddRange(value.ToByteArray(32, true));
+        }
+
+        return data.ToArray();
+    }
 }
