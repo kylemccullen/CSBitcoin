@@ -32,8 +32,8 @@ public class PrivateKey
 
     private BigInteger DeterministicK(BigInteger z)
     {
-        var k = ByteHelper.GetBytes(32, 0x00);
-        var v = ByteHelper.GetBytes(32, 0x01);
+        var k = GetBytes(32, 0x00);
+        var v = GetBytes(32, 0x01);
         if (z > Constants.N)
         {
             z -= Constants.N;
@@ -41,9 +41,9 @@ public class PrivateKey
         var z_bytes = z.ToByteArray(32, true);
 
         var secret_bytes = Secret.ToByteArray(32, true);
-        k = HmacSHA256_(k, v, ByteHelper.GetBytes(1, 0x00), secret_bytes, z_bytes);
+        k = HmacSHA256_(k, v, GetBytes(1, 0x00), secret_bytes, z_bytes);
         v = HmacSHA256_(k, v);
-        k = HmacSHA256_(k, v, ByteHelper.GetBytes(1, 0x01), secret_bytes, z_bytes);
+        k = HmacSHA256_(k, v, GetBytes(1, 0x01), secret_bytes, z_bytes);
         v = HmacSHA256_(k, v);
 
         while (true)
@@ -55,7 +55,7 @@ public class PrivateKey
                 return canidate;
             }
 
-            k = HmacSHA256_(k, v, ByteHelper.GetBytes(1, 0x00));
+            k = HmacSHA256_(k, v, GetBytes(1, 0x00));
             v = HmacSHA256_(k, v);
         }
     }
@@ -88,5 +88,16 @@ public class PrivateKey
             hmBytes = hmac.ComputeHash(encoder.GetBytes(data));
         }
         return hmBytes;
+    }
+
+    private static byte[] GetBytes(int size, byte value)
+    {
+        var bytes = new byte[size];
+        for (var i = 0; i < size; i++)
+        {
+            bytes[i] = value;
+        }
+
+        return bytes;
     }
 }

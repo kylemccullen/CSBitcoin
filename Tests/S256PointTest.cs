@@ -25,7 +25,8 @@ public class S256PointTest
     public void Verify(string x, string y, string z, string r, string s)
     {
         var p = new S256Point(x, y);
-        Assert.True(p.Verify(MathHelper.Parse(z), new Signature(r, s)));
+
+        Assert.True(p.Verify(z.ToBigInteger(true), new Signature(r.ToBigInteger(true), s.ToBigInteger(true))));
     }
 
     [Theory]
@@ -42,7 +43,7 @@ public class S256PointTest
     {
         var p = Constants.G * BigInteger.Parse(coefficient);
 
-        Assert.Equal(uncompressed, ByteHelper.ToHexString(p.SECKey(false)));
-        Assert.Equal(compressed, ByteHelper.ToHexString(p.SECKey()));
+        Assert.Equal(uncompressed.ToByteArray(true), p.SECKey(false));
+        Assert.Equal(compressed.ToByteArray(true), p.SECKey());
     }
 }

@@ -13,12 +13,6 @@ public class Signature
         S = s;
     }
 
-    public Signature(string r, string s)
-    {
-        R = MathHelper.Parse(r);
-        S = MathHelper.Parse(s);
-    }
-
     public override string ToString()
     {
         return $"Signature({R}, {S})";

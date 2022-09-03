@@ -11,8 +11,8 @@ public class S256Point : Point
 
     public S256Point(string x, string y)
         : base(
-                new S256Field(MathHelper.Parse(x)),
-                new S256Field(MathHelper.Parse(y)),
+                new S256Field(x.ToBigInteger(true)),
+                new S256Field(y.ToBigInteger(true)),
                 new S256Field(Constants.A),
                 new S256Field(Constants.B)
                 )
