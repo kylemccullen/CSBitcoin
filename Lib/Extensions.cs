@@ -37,6 +37,11 @@ public static class Extensions
 
     public static BigInteger ToBigInteger(this byte[] value, bool isBigEndian = false)
     {
+        if (value[0] != 0x00)
+        {
+            value = new byte[] { 0x00 }.Concat(value).ToArray();
+        }
+
         if (isBigEndian)
         {
             Array.Reverse(value, 0, value.Length);

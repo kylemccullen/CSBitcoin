@@ -50,13 +50,18 @@ public class FieldElement
         return !a.Equals(b);
     }
 
-    public static FieldElement operator +(FieldElement a, FieldElement b)
+    public static FieldElement Add(FieldElement a, FieldElement b)
     {
         if (a.Prime != b.Prime)
             throw new Exception("Cannot add numbers of different Fields!");
 
         var num = MathHelper.Mod(a.Num!.Value + b.Num!.Value, a.Prime);
         return new FieldElement(num, a.Prime);
+    }
+
+    public static FieldElement operator +(FieldElement a, FieldElement b)
+    {
+        return Add(a, b);
     }
 
     public static FieldElement operator -(FieldElement a, FieldElement b)

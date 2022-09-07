@@ -10,7 +10,7 @@ public class S256PointTest
     [InlineData("1766847064778384329583297500742918515827483896875618958121606203440103424", "0x9577ff57c8234558f293df502ca4f09cbc65a6572c842b39b366f21717945116", "0x10b49c67fa9365ad7b90dab070be339a1daf9052373ec30ffae4f72d5e66d053")]
     public void PublicPoint(string secret, string x, string y)
     {
-        var p = new S256Point(x, y);
+        var p = new S256Point(x.ToBigInteger(true), y.ToBigInteger(true));
 
         Assert.Equal(p, Constants.G * BigInteger.Parse(secret));
     }
@@ -24,7 +24,7 @@ public class S256PointTest
             "0x68342ceff8935ededd102dd876ffd6ba72d6a427a3edb13d26eb0781cb423c4")]
     public void Verify(string x, string y, string z, string r, string s)
     {
-        var p = new S256Point(x, y);
+        var p = new S256Point(x.ToBigInteger(true), y.ToBigInteger(true));
 
         Assert.True(p.Verify(z.ToBigInteger(true), new Signature(r.ToBigInteger(true), s.ToBigInteger(true))));
     }
@@ -45,5 +45,8 @@ public class S256PointTest
 
         Assert.Equal(uncompressed.ToByteArray(true), p.SECKey(false));
         Assert.Equal(compressed.ToByteArray(true), p.SECKey());
+
+        Assert.Equal(p, S256Point.Parse(uncompressed.ToByteArray(true)));
+        Assert.Equal(p, S256Point.Parse(compressed.ToByteArray(true)));
     }
 }

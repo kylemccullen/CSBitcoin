@@ -1,4 +1,5 @@
 using System.Numerics;
+using System.Text;
 
 namespace Lib;
 
@@ -9,10 +10,10 @@ public class S256Point : Point
     {
     }
 
-    public S256Point(string x, string y)
+    public S256Point(BigInteger x, BigInteger y)
         : base(
-                new S256Field(x.ToBigInteger(true)),
-                new S256Field(y.ToBigInteger(true)),
+                new S256Field(x),
+                new S256Field(y),
                 new S256Field(Constants.A),
                 new S256Field(Constants.B)
                 )
@@ -54,6 +55,42 @@ public class S256Point : Point
         {
             var prefixByte = (byte) 0x04;
             return AddBytePrefix(prefixByte, X.Num!.Value, Y.Num!.Value);
+        }
+    }
+
+    public static S256Point Parse(byte[] secKey)
+    {
+
+        if (secKey[0] == 0x04)
+        {
+            var xBytes = secKey[1..33];
+            var yBytes = secKey[33..65];
+            return new S256Point(xBytes.ToBigInteger(true), yBytes.ToBigInteger(true));
+        }
+
+        var x = new S256Field(secKey[1..33].ToBigInteger(true));
+        var alpha = S256Field.Pow(x, 3) + new S256Field(Constants.B);
+        var beta = alpha.Sqrt();
+
+        S256Field even, odd;
+        if (beta.Num % 2 == 0)
+        {
+            even = beta;
+            odd = new S256Field(Constants.P - beta.Num);
+        }
+        else
+        {
+            even = new S256Field(Constants.P - beta.Num);
+            odd = beta;
+        }
+
+        if (secKey[0] == 0x02)
+        {
+            return new S256Point(x, even);
+        }
+        else
+        {
+            return new S256Point(x, odd);
         }
     }
 
